@@ -1,23 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+
+#INIZIALIZZAZIONE MOTORE DI TEMPLATING: importo la libreria
+from fastapi.templating import Jinja2Templates
+
 app = FastAPI ()
+#con questa riga dico alla libreria dove trovare i file html
+#il punto indica cartella corrente, ma posso anche scrivere solo il nome
+templates = Jinja2Templates(directory = "./templates")
 
-@app.get("/")
-#cioò all'interno delle parentesi della funzione endpoint, sono i parametri d'ingresso della richiesta
-#si possono inserire anche parametri di default e quindi facoltativi
-#TYPING--->in FASTAPI rispetto PYTHON è reso obbligatorio in runtime, e segnala errore in presenza di errore
-def home():
+@app.get("/", response_class=HTMLResponse)
+def home(request: Request ):
     """Renders the home page"""
-    html = """
-    <!DOCTYPE html>
-    <html>
-    <body> 
-    <h1> Hello World! </h1>
-    <p> This is a simple FASTAPI app.</p>
-    </body>
-    </html>
-    """
+    #MOTORE DI TEMPLATING, IL PRIMO PARAMETRO SI PASSA SEMPRE DI DEFAULT
+    #IL SECONDO PARAMETRO INDICA IL NOME DEL FILE HTML DA CUI DEVE PESCARE IL CODICE
+    #CI SAREBBE UN TERZO PARAMETRO MA A NOI PER ORA NON INTERESS
 
-    return html
+    return templates.TemplateResponse(request = request, name = "home.html")
 
 
 
