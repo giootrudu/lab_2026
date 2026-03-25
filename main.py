@@ -14,9 +14,10 @@ def home(request: Request ):
     """Renders the home page"""
     #MOTORE DI TEMPLATING, IL PRIMO PARAMETRO SI PASSA SEMPRE DI DEFAULT
     #IL SECONDO PARAMETRO INDICA IL NOME DEL FILE HTML DA CUI DEVE PESCARE IL CODICE
-    #CI SAREBBE UN TERZO PARAMETRO MA A NOI PER ORA NON INTERESS
+    #TERZO PARAMETRO DELLA TEMPLATE RESPONSE
+    context =  {"text": "Welcome to the home page !"}
 
-    return templates.TemplateResponse(request = request, name = "home.html")
+    return templates.TemplateResponse(request = request, name = "home.html", context = context)
 
 
 
