@@ -1,10 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from typing import Annotated
+from pydantic import Field
 
 #INIZIALIZZAZIONE MOTORE DI TEMPLATING: importo la libreria
 from fastapi.templating import Jinja2Templates
+
 
 app = FastAPI ()
 #con questa riga dico alla libreria dove trovare i file html
@@ -43,9 +45,10 @@ def products_form (request: Request):
 
 #END POINT CHE RACCOGLIE I DATI DEL FORM
 @app.get ("/insert_product")
-def insert_product (name: str | None = None,
-                    price: float | None = None,
-                    location: str | None = None):
+def insert_product (name: Annotated[str, Field(min_length=3, max_length= 30)],
+                    price: Annotated[float, Field(gt=0)],
+                    location: Annotated [str, Field(min_length=3)]
+                    ):
     product = {"name": name, "price": price, "location": location}
     product_list.append(product)
     return "Product added successfully"
