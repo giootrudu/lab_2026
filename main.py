@@ -44,10 +44,10 @@ def products_form (request: Request):
                                           )
 
 #END POINT CHE RACCOGLIE I DATI DEL FORM
-@app.get ("/insert_product")
-def insert_product (name: Annotated[str, Field(min_length=3, max_length= 30)],
-                    price: Annotated[float, Field(gt=0)],
-                    location: Annotated [str, Field(min_length=3)]
+@app.post ("/insert_product")
+def insert_product (name: Annotated[str, Form(), Field(min_length=3, max_length= 30)],
+                    price: Annotated[float, Form(), Field(gt=0)],
+                    location: Annotated [str, Form(), Field(min_length=3)]
                     ):
     product = {"name": name, "price": price, "location": location}
     product_list.append(product)
