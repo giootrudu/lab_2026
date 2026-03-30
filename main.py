@@ -2,10 +2,17 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from typing import Annotated
-from pydantic import Field
+from pydantic import Field, BaseModel
 
 #INIZIALIZZAZIONE MOTORE DI TEMPLATING: importo la libreria
 from fastapi.templating import Jinja2Templates
+
+#MODELLO PYDANTIC PER RAPPRESENTARE UN PRODOTTO
+
+class Product (BaseModel):
+    name: Annotated[str, Field(min_length=3, max_length= 30)]
+    price: Annotated[float, Field(gt=0)]
+    location: Annotated[str, Field(min_length=3)]
 
 
 app = FastAPI ()
@@ -14,9 +21,9 @@ app = FastAPI ()
 app.mount("/static", StaticFiles(directory="static"), name = "static")
 templates = Jinja2Templates(directory = "./templates")
 
-product_list = [
-    {"name": "notebook LENOVO", "price": 2999.99, "location": "Cagliari"},
-    {"name": "samsung 500", "price": 500, "location": "Sestu"}
+#LISTA DI PRODOTTI INSERITI IN BACKEND
+product_list = [Product(name = "Notebook", price = 50.00, location = "Cagliari"),
+                Product(name = "Smartphone Samsung", price = 250.00, location = "Sestu")
 ]
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request ):
@@ -43,13 +50,10 @@ def products_form (request: Request):
                                           name = "products_form.html"
                                           )
 
-#END POINT CHE RACCOGLIE I DATI DEL FORM
+#END POINT CHE RACCOGLIE I DATI DEL FORM CHE UTILIZZA IL MODELLO PYDANTIC
 @app.post ("/insert_product")
-def insert_product (name: Annotated[str, Form(), Field(min_length=3, max_length= 30)],
-                    price: Annotated[float, Form(), Field(gt=0)],
-                    location: Annotated [str, Form(), Field(min_length=3)]
+def insert_product (product: Annotated[Product, Form()]
                     ):
-    product = {"name": name, "price": price, "location": location}
     product_list.append(product)
     return "Product added successfully"
 
