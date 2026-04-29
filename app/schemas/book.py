@@ -1,6 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import Annotated
 
+#CLASSE RIFERIMENTO PER MODIFICARE IN MANIERA OPZIONALE TITOLO E AUTORE DEL LIBRO
+#PROVARE A FARE L'API PER QUESTO
+class BookPatch (BaseModel):
+    title: str | None = None
+    author: str | None = None
+
+
 class Book(BaseModel):
     id: int
     title: str
@@ -22,7 +29,7 @@ class Book(BaseModel):
 
 books = {
     0: Book (id =0, title = "Il nome della Rosa", author = "Umberto Eco", review= 5),
-    1: Book (id =1, title = "Il gioco dei sei", author = "Umberto Eco", review= 3),
+    1: Book (id =1, title = "Il gioco dei sei", author = "Umberto Eco", review= 1),
     2: Book (id =2, title = "Il piccolo principe", author = "Anna Frank", review= 2)
 }
 
