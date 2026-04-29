@@ -1,5 +1,5 @@
 '''INIZIALIZZAZIONE DEL DATABASE'''
-from sqlmodel import create_engine, SQLmodel, Session
+from sqlmodel import create_engine, SQLModel, Session
 
 sqlite_file_name = "c:"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
