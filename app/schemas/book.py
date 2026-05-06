@@ -1,36 +1,30 @@
 from pydantic import BaseModel, Field
 from typing import Annotated
+from sqlmodel import SQLModel, Field
 
 #CLASSE RIFERIMENTO PER MODIFICARE IN MANIERA OPZIONALE TITOLO E AUTORE DEL LIBRO
+#AGGIORNARE IN MANIERA PARZIALE LA CLASSE
 #PROVARE A FARE L'API PER QUESTO
 class BookPatch (BaseModel):
     title: str | None = None
     author: str | None = None
 
-
-class Book(BaseModel):
-    id: int
+#classe radice che ha gli attributi che ripetono e che eriditano gli altri modelli
+class BookBase(SQLModel):
     title: str
     author: str
-    review: Annotated[int, Field(ge = 1, le = 5)] = None
+    review: Annotated[int, Field(ge=1, le = 5)] = None
 
-    model_config = {
-        "json_schema_extra": {
-            "example": [
-                {
-                    "id": 1,
-                    "title": "Il nome della Rosa",
-                    "author": "Umberto Eco",
-                    "review": 5
-                }
-            ]
-        }
-    }
+class BookCreate(BookBase):
+    pass
 
-books = {
-    0: Book (id =0, title = "Il nome della Rosa", author = "Umberto Eco", review= 5),
-    1: Book (id =1, title = "Il gioco dei sei", author = "Umberto Eco", review= 1),
-    2: Book (id =2, title = "Il piccolo principe", author = "Anna Frank", review= 2)
-}
+#schema che viene utilizzato nelle get, in cui voglio che ci sia anche l'id delle risorse
+class BookPublic(BookBase):
+    id: int
 
-print (Book.model_json_schema())
+#classe che utilizzerò quando voglio accedere al database tramite query
+#passaggio da classe python a tabella database
+class BookDB(BookBase, table = True):
+    #nel database deve essere presente anche l'id, che deve essere la chiave primaria
+    #è di default
+    id: int = Field(default = None, primary_key = True)
