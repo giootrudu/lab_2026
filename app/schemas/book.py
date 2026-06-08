@@ -2,23 +2,22 @@ from pydantic import BaseModel, Field
 from typing import Annotated
 from sqlmodel import SQLModel, Field
 
-#CLASSE RIFERIMENTO PER MODIFICARE IN MANIERA OPZIONALE TITOLO E AUTORE DEL LIBRO
-#AGGIORNARE IN MANIERA PARZIALE LA CLASSE
-#PROVARE A FARE L'API PER QUESTO
-class BookPatch (BaseModel):
-    title: str | None = None
-    author: str | None = None
-
 #classe radice che ha gli attributi che ripetono e che eriditano gli altri modelli
 class BookBase(SQLModel):
     title: str
     author: str
-    review: Annotated[int, Field(ge=1, le = 5)] = None
+    review: Annotated[int | None, Field(ge=1, le = 5)] = None
 
+
+#modello relazionale che rappresenta la tabella del database
+class Book(BookBase, table = True):
+    id: Annotated[int, Field(default = None, primary_key = True)]
+
+#schema per creare un nuovo libro
 class BookCreate(BookBase):
     pass
 
-#schema che viene utilizzato nelle get, in cui voglio che ci sia anche l'id delle risorse
+#schema per restiruire le infro di un libro
 class BookPublic(BookBase):
     id: int
 
