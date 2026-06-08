@@ -10,18 +10,24 @@ from schemas.users import UserDB
 from schemas.book_user_link import BookUserLink
 from faker import Faker
 
+# 1. Definizione del percorso del file di database
 sqlite_file_name = "app/data/database.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 connect_args = {"check_same_thread": False}
+
+# 2. Creazione del Motore (Engine)
 engine = create_engine(
     sqlite_url,
     connect_args= connect_args,
     echo = True
 )
 def init_database() -> None:
+    #Si controlla se il file del DB esiste già per evitare di inserire dati duplicati
     ds_exists = os.path.isfile(sqlite_file_name)
+    # 3. Creazione fisica delel tabelle
     SQLModel.metadata.create_all(engine)
     if not ds_exists:
+        # Qui usiamo il Faker per popolare il database con 10 utenti/libri fittizi
         f = Faker ("it_IT")
         with Session(engine) as session:
             for i in range(10):
@@ -45,10 +51,12 @@ def init_database() -> None:
                 session.add(link)
             session.commit()
 
-#DEPENDENCIE: DA RICHIAMARE OGNI VOLTA CHE SI HA NECESSITA' DI INTERAGIRE CON IL DATABASE
+#DEPENDENCY INJECTION: DA RICHIAMARE OGNI VOLTA CHE SI HA NECESSITA' DI INTERAGIRE CON IL DATABASE
 def get_session():
     with Session(engine) as session:
         yield session
 
 SessionDep = Annotated[Session, Depends(get_session)]
-#session: SessionDep
+#session: SessionDep. session è una variabile che prende il formato SessionDep
+#SessionDep è il Tipo che indica una sessione di database gestita e aperta automaticamente
+#da fastAPI

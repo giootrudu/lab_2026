@@ -1,4 +1,3 @@
-from pydantic import BaseModel, Field
 from typing import Annotated
 from sqlmodel import SQLModel, Field
 
@@ -9,20 +8,21 @@ class BookBase(SQLModel):
     review: Annotated[int | None, Field(ge=1, le = 5)] = None
 
 
-#modello relazionale che rappresenta la tabella del database
-class Book(BookBase, table = True):
-    id: Annotated[int, Field(default = None, primary_key = True)]
-
 #schema per creare un nuovo libro
+#INPUT DELLE API: al momento dell'invio del JSON tramite richiesta POST
+# l'utente non deve inviare l'ID in quanto lo genera automaticamente il server (database)
 class BookCreate(BookBase):
     pass
 
 #schema per restiruire le infro di un libro
+#ha accesso al DATABASE E DEVE poter inviare un ID per effettuare la ricerca
 class BookPublic(BookBase):
     id: int
 
+#CLASSE CHE RAPPRESENTA IL MODELLO RELAZIONALE
 #classe che utilizzerò quando voglio accedere al database tramite query
 #passaggio da classe python a tabella database
+
 class BookDB(BookBase, table = True):
     #nel database deve essere presente anche l'id, che deve essere la chiave primaria
     #è di default

@@ -10,12 +10,15 @@ from sqlmodel import select
 
 users_router = APIRouter(prefix = "/users")
 
+#API 1: Recuperare tutti gli utenti
 @users_router.get("/")
 def get_all_users(session: SessionDep) -> list[UserPublic]:
     """Return all users"""
     users = session.exec(select(UserDB)).all()
     return users
 
+
+#API 2: Restituisce i libri presi in prestito da un utente dato l'id
 @users_router.get("/{id}/books")
 def get_user_books(
         id:int,
